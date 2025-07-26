@@ -83,13 +83,13 @@ int main(){
     handle->Instance = (uint64_t)0x1111111100000000;
 
     uint64_t address = handle->Instance;
-    printf("---handle->Instance = %p\n", address);
+    printf("---handle->Instance = 0x%016llx\n", address);
 
     handle->Instance->Value1 = 16;
     int v = handle->Instance->Value1;
     printf("---handle->Instance->Value1 = %d\n", v);
-    
-#define PRINT(_V) printf("---" #_V " addr = %p, size = %ld\n", &_V, _V.size());
+     
+#define PRINT(_V) printf("---" #_V " addr = 0x%016llx, size = %lld\n", &_V, _V.size());
     PRINT(handle->Instance->Value1);
     PRINT(handle->Instance->Value2);
     PRINT(handle->Instance->Value3);
@@ -101,7 +101,7 @@ int main(){
     PRINT(handle->Instance->Value5);
     PRINT(handle->Instance->Value6);
        
-    printf("total size = %ld Bytes\n", handle->Instance->size());
+    printf("total size = %lld Bytes\n", handle->Instance->size());
     
 
     StructureType<StructureD> Instance2;
@@ -115,6 +115,6 @@ int main(){
     PRINT(Instance2->structC->Array1[1]);
     PRINT(Instance2->structC->Array1[2]);
 
-    printf("total size = %ld Bytes\n", Instance2->size());
+    printf("total size = %lld Bytes\n", Instance2->size());
     return 0;
 }
