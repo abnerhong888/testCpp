@@ -5,12 +5,12 @@
 #include "ValueAddressing.h"
 
 
-class StructureB : public StructureBase{
+class StructureB : public StructAddressingBase{
 public:
-        ValueType<uint32_t> Value1;
-        ValueType<uint32_t> Value2;
+        ValueAddressing<uint32_t> Value1;
+        ValueAddressing<uint32_t> Value2;
 public:
-    void set_values_address(uint64_t _address){
+    void setValuesAddress(uint64_t _address){
         setAddress(_address);
         valueSet(Value1);
         valueSet(Value2);
@@ -18,18 +18,18 @@ public:
     
 };
 
-class StructureA : public StructureBase{
+class StructureA : public StructAddressingBase{
 public:
-        ValueType<uint32_t> Value1;
-        ValueType<uint32_t> Value2;
-        ValueType<uint32_t> Value3;
-        ValueType<uint32_t> Array1[2];
-        ValueType<uint64_t> Value4;
-        StructureType<StructureB> structureB;
-        ValueType<uint64_t> Value5;
-        ValueType<uint64_t> Value6;
+        ValueAddressing<uint32_t> Value1;
+        ValueAddressing<uint32_t> Value2;
+        ValueAddressing<uint32_t> Value3;
+        ValueAddressing<uint32_t> Array1[2];
+        ValueAddressing<uint64_t> Value4;
+        StructAddressing<StructureB> structureB;
+        ValueAddressing<uint64_t> Value5;
+        ValueAddressing<uint64_t> Value6;
 public:
-    void set_values_address(uint64_t _address){
+    void setValuesAddress(uint64_t _address){
         setAddress(_address);
 
         valueSet(Value1);
@@ -48,7 +48,7 @@ public:
 };
 
 typedef struct Handler{
-    StructureType<StructureA> Instance;
+    StructAddressing<StructureA> Instance;
 }Handler;
 
 
@@ -104,8 +104,9 @@ int main(){
     printf("total size = %lld Bytes\n", handle->Instance->size());
     
 
-    StructureType<StructureD> Instance2;
+    StructAddressing<StructureD> Instance2;
     Instance2 = (uint64_t)0x0000000011111110;
+    printf("---Instance2 = 0x%016llx\n", Instance2.getAddress());
 
     PRINT(Instance2->Value1);
     PRINT(Instance2->Value2);

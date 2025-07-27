@@ -8,41 +8,58 @@
 #   define __ARRAY_SIZE(__ValueTypeArray)  (size_t)(sizeof(__ValueTypeArray) / sizeof(__ValueTypeArray[0]))
 #endif
 
-template<typename T>
-class StructureType{
+template<typename StructType>
+class StructAddressing{
 public:
     // set address
-    void operator= (uint64_t _address){
+    void setAddress(uint64_t _address){
         address = _address;
-        structObject.set_values_address(address);
-        //printf("StructureType:: operator set address\n");
+        structObject.setValuesAddress(address);
     }
     // get address
-    operator uint64_t(){
-        //printf("StructureType:: operator return address\n");
+    uint64_t getAddress(){
         return address;
     }
 
-    T* operator->(){
-        //printf("StructureType:: call struct pointer\n");
+    // set address
+    void operator= (uint64_t _address){
+        setAddress(_address);
+        //printf("StructAddressing:: operator set address\n");
+    }
+    // get address
+    operator uint64_t(){
+        //printf("StructAddressing:: operator return address\n");
+        return address;
+    }
+
+    StructType* getStructObject(){
+        return &structObject;
+    }
+
+    StructType* operator->(){
+        //printf("StructAddressing:: call struct pointer\n");
         return &structObject;
     }
 
 private:
-    T structObject;
+    StructType structObject;
     uint64_t address = 0;
 };
 
 
-class ValueTypeBase{
+class ValueAddressingBase{
 public:
-    void set_address(uint64_t _address){
+    uint64_t getAddress(){
+        return address;
+    }
+
+    void setAddress(uint64_t _address){
         address = _address;
     }
 
     virtual size_t size() = 0;
 
-    operator ValueTypeBase* (){
+    operator ValueAddressingBase* (){
         return this;
     }
     
@@ -50,55 +67,52 @@ protected:
     uint64_t address = 0;
 };
 
-template<typename T>
-class ValueType: public ValueTypeBase{
+template<typename DataType>
+class ValueAddressing: public ValueAddressingBase{
 public:
     // set value
-    void operator= (T _value){
+    void operator= (DataType _value){
         value = _value;
-        //printf("ValueType:: operator set value\n");
+        //printf("ValueAddressing:: operator set value\n");
     }
     // get value
-    operator T(){
-        //printf("ValueType:: operator return value\n");
+    operator DataType(){
+        //printf("ValueAddressing:: operator return value\n");
         return value;
     }
-
+    // get address
     uint64_t operator& (){
         return address;
     }
 
     size_t size() override{
-        return sizeof(T);
+        return sizeof(DataType);
     }
 private: 
-    T value = {};
+    DataType value = {};
 };
 
-class StructureBase{
+class StructAddressingBase{
 public:
-    virtual void set_values_address(uint64_t _address) = 0;
+    virtual void setValuesAddress(uint64_t _address) = 0;
 
-    void valueSet(ValueTypeBase* value){
-        value->set_address(address);
-        address += value->size();
+    void valueSet(ValueAddressingBase* value){
+        value->setAddress(address + total_size);
         total_size += value->size();
     }
 
     template<typename T>
     void structSet(T* structValue){
-        *structValue = address;
-        address = (*structValue)->getAddress();
+        *structValue = address + total_size;
         total_size += (*structValue)->size();
     }
 
     template<typename T>
     void arraySet(T array, size_t n){
-        ValueTypeBase* base = nullptr;
+        ValueAddressingBase* base = nullptr;
         for(size_t i = 0; i < n; ++i){
             base = array[i];
-            base->set_address(address);
-            address += base->size();
+            base->setAddress(address + total_size);
             total_size += base->size();
         }
     }
@@ -122,23 +136,23 @@ protected:
 
 
 #define DEF_STRUCT(_struct_name) \
-class _struct_name : public StructureBase
+class _struct_name : public StructAddressingBase
 
 
 #define DEF_SET_ADDRESS_START \
-void set_values_address(uint64_t _address){ \
+void setValuesAddress(uint64_t _address){ \
         setAddress(_address); \
 
 #define DEF_SET_ADDRESS_END }
 
 #define DEF_VALUE_VARIABLE(_type, _name) \
-ValueType<_type> _name;
+ValueAddressing<_type> _name;
 
 #define DEF_VALUE_ARRAY(_type, _name, _size) \
-ValueType<_type> _name[_size];
+ValueAddressing<_type> _name[_size];
 
 #define DEF_VALUE_STRUCT(_type, _name) \
-StructureType<_type> _name;
+StructAddressing<_type> _name;
 
 #define DEF_SET_VARIABLE(_type, _name) \
 valueSet(_name);
