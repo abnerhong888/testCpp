@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 rm CMakePresets.json -f
 ln -s ../CMakePresets.json CMakePresets.json
 
