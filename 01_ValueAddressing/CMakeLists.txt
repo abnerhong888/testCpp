@@ -14,15 +14,15 @@ add_executable(${PROJECTNAME})
 
 target_include_directories( 
     ${PROJECTNAME} 
-    PRIVATE ${INC_DIR} 
+    PUBLIC ${INC_DIR} 
 )
 
 target_sources( 
     ${PROJECTNAME} 
-    PRIVATE ${SRCS}
+    PUBLIC ${SRCS}
 )
 
-target_compile_definitions( ${PROJECTNAME}  PRIVATE
+target_compile_definitions( ${PROJECTNAME}  PUBLIC
     # "_CRT_SECURE_NO_WARNINGS"
     PUBLIC
     $<$<CONFIG:Debug>:DEBUG>
