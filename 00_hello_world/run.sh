@@ -1,2 +1,1 @@
-
-stdbuf -oL ./build/a.out | tee run.log
+stdbuf -oL ./build/a.out |& tee run.log
