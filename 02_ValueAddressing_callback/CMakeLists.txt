@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 4.0.1)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall")
+
 set(PROJECTNAME "a.out")
 set(INC_DIR "./")
 set(SRC_DIR "./")
